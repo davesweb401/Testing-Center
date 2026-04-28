@@ -33,26 +33,29 @@
 <div id="loading">Loading Testing Center App…</div>
 
 <script>
-  // Read query parameters from the URL
+  // Read query parameters from the wrapper URL
   const params = new URLSearchParams(window.location.search);
 
+  const testtitle = encodeURIComponent(params.get("testtitle") || "");
   const startdate = encodeURIComponent(params.get("startdate") || "");
   const enddate   = encodeURIComponent(params.get("enddate")   || "");
   const tduration = encodeURIComponent(params.get("tduration") || "");
   const twindow   = encodeURIComponent(params.get("twindow")   || "");
 
-  // Base Canvas App URL (no parameters)
+  // Base Canvas App URL WITH tenantId baked in
   const baseUrl =
-    "https://apps.powerapps.com/play/e/default-bb8b8a6b-2799-4f34-bf92-85f819bc006f/a/b343f2b0-da46-45e1-ba9e-82bafca430d2";
+    "https://apps.powerapps.com/play/e/default-bb8b8a6b-2799-4f34-bf92-85f819bc006f/a/b343f2b0-da46-45e1-ba9e-82bafca430d2" +
+    "?tenantId=bb8b8a6b-2799-4f34-bf92-85f819bc006f";
 
-  // Build final URL
+  // Build final URL EXACTLY like your required format
   const finalUrl =
     baseUrl +
-    "?startdate=" + startdate +
+    "&testtitle=" + testtitle +
+    "&startdate=" + startdate +
     "&enddate=" + enddate +
     "&tduration=" + tduration +
     "&twindow=" + twindow +
-    "&skipMobileRedirect=1";
+    "&skipMobileRedirect=1#";
 
   // Create iframe dynamically
   const iframe = document.createElement("iframe");
