@@ -19,6 +19,8 @@
       transform: translate(-50%, -50%);
       font-size: 20px;
       color: #444;
+      text-align: center;
+      max-width: 320px;
     }
     iframe {
       border: none;
@@ -36,11 +38,11 @@
   // Read query parameters from the wrapper URL
   const params = new URLSearchParams(window.location.search);
 
-  const testtitle = encodeURIComponent(params.get("testtitle") || "");
-  const startdate = encodeURIComponent(params.get("startdate") || "");
-  const enddate   = encodeURIComponent(params.get("enddate")   || "");
-  const tduration = encodeURIComponent(params.get("tduration") || "");
-  const twindow   = encodeURIComponent(params.get("twindow")   || "");
+  const testtitle = params.get("testtitle") || "";
+  const startdate = params.get("startdate") || "";
+  const enddate   = params.get("enddate")   || "";
+  const tduration = params.get("tduration") || "";
+  const twindow   = params.get("twindow")   || "";
 
   // Base Canvas App URL WITH tenantId baked in
   const baseUrl =
@@ -50,18 +52,14 @@
   // Build final URL EXACTLY like your required format
   const finalUrl =
     baseUrl +
-    "&testtitle=" + testtitle +
-    "&startdate=" + startdate +
-    "&enddate=" + enddate +
-    "&tduration=" + tduration +
-    "&twindow=" + twindow +
-    "&skipMobileRedirect=1#";
+    "&testtitle=" + encodeURIComponent(testtitle) +
+    "&startdate=" + encodeURIComponent(startdate) +
+    "&enddate=" + encodeURIComponent(enddate) +
+    "&tduration=" + encodeURIComponent(tduration) +
+    "&twindow=" + encodeURIComponent(twindow) +
+    "&skipMobileRedirect=1" +
+    "&source=iframe#";
 
-  // Create iframe dynamically
-  const iframe = document.createElement("iframe");
-  iframe.src = finalUrl;
-
-<script>
   // Create iframe dynamically
   const iframe = document.createElement("iframe");
   iframe.src = finalUrl;
@@ -80,7 +78,7 @@
   setTimeout(() => {
     if (!loaded) {
       document.getElementById("loading").innerHTML = `
-        <div style="max-width: 320px; text-align: center; padding: 20px;">
+        <div>
           <strong>The app is taking longer than expected to load.</strong><br><br>
           If you are using <strong>Brave</strong> or a privacy‑focused browser:<br><br>
           • Tap the Brave lion icon<br>
@@ -90,11 +88,7 @@
         </div>
       `;
     }
-  }, 3500); // 3.5 seconds is enough to detect failure on mobile
-</script>
-
-
-  document.body.appendChild(iframe);
+  }, 3500); // 3.5 seconds to detect iframe failure
 </script>
 
 </body>
