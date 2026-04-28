@@ -61,10 +61,38 @@
   const iframe = document.createElement("iframe");
   iframe.src = finalUrl;
 
+<script>
+  // Create iframe dynamically
+  const iframe = document.createElement("iframe");
+  iframe.src = finalUrl;
+
+  let loaded = false;
+
   iframe.onload = () => {
+    loaded = true;
     document.getElementById("loading").style.display = "none";
     iframe.style.display = "block";
   };
+
+  document.body.appendChild(iframe);
+
+  // Fallback message if iframe fails to load (Brave Shields, cookie blocking, etc.)
+  setTimeout(() => {
+    if (!loaded) {
+      document.getElementById("loading").innerHTML = `
+        <div style="max-width: 320px; text-align: center; padding: 20px;">
+          <strong>The app is taking longer than expected to load.</strong><br><br>
+          If you are using <strong>Brave</strong> or a privacy‑focused browser:<br><br>
+          • Tap the Brave lion icon<br>
+          • Turn <strong>Shields OFF</strong> for this site<br>
+          • Or allow cookies and cross‑site tracking<br><br>
+          Then refresh the page.
+        </div>
+      `;
+    }
+  }, 3500); // 3.5 seconds is enough to detect failure on mobile
+</script>
+
 
   document.body.appendChild(iframe);
 </script>
