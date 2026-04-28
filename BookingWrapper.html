@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Testing Center App Loader</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: #f5f5f5;
+      font-family: Arial, sans-serif;
+    }
+    #loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 20px;
+      color: #444;
+    }
+    iframe {
+      border: none;
+      width: 100vw;
+      height: 100vh;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="loading">Loading Testing Center App…</div>
+
+<script>
+  // Read query parameters from the URL
+  const params = new URLSearchParams(window.location.search);
+
+  const startdate = encodeURIComponent(params.get("startdate") || "");
+  const enddate   = encodeURIComponent(params.get("enddate")   || "");
+  const tduration = encodeURIComponent(params.get("tduration") || "");
+  const twindow   = encodeURIComponent(params.get("twindow")   || "");
+
+  // Base Canvas App URL (no parameters)
+  const baseUrl =
+    "https://apps.powerapps.com/play/e/default-bb8b8a6b-2799-4f34-bf92-85f819bc006f/a/b343f2b0-da46-45e1-ba9e-82bafca430d2";
+
+  // Build final URL
+  const finalUrl =
+    baseUrl +
+    "?startdate=" + startdate +
+    "&enddate=" + enddate +
+    "&tduration=" + tduration +
+    "&twindow=" + twindow +
+    "&skipMobileRedirect=1";
+
+  // Create iframe dynamically
+  const iframe = document.createElement("iframe");
+  iframe.src = finalUrl;
+
+  iframe.onload = () => {
+    document.getElementById("loading").style.display = "none";
+    iframe.style.display = "block";
+  };
+
+  document.body.appendChild(iframe);
+</script>
+
+</body>
+</html>
