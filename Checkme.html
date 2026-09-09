@@ -63,4 +63,60 @@ async function checkMicrosoft() {
     });
 
     el.className = "status ok";
-    el.innerHTML = "✔ Microsoft login service reachable. If you are signed in, SSO should work
+    el.innerHTML = "✔ Microsoft login service reachable. If you are signed in, SSO should work.";
+  } catch (e) {
+    el.className = "status warn";
+    el.innerHTML = "⚠ Cannot reach Microsoft login service. You may not be signed in or your browser is blocking authentication.";
+  }
+}
+
+// 3. Check MyVCCCD / SAML IdP session
+async function checkVCCCD() {
+  const el = document.getElementById("vcccdStatus");
+
+  try {
+    await fetch("https://account.vcccd.edu/idp/profile/SAML2/Redirect/SSO", {
+      method: "GET",
+      mode: "no-cors"
+    });
+
+    el.className = "status ok";
+    el.innerHTML = "✔ MyVCCCD login service reachable. If you are signed in, SSO should work.";
+  } catch (e) {
+    el.className = "status warn";
+    el.innerHTML = "⚠ Cannot reach MyVCCCD login service. You may not be signed in or your browser is blocking SSO.";
+  }
+}
+
+// 4. Fix My Login button
+function fixLogin() {
+  // Clear local storage
+  localStorage.clear();
+  sessionStorage.clear();
+
+  // Attempt to clear cookies (best effort)
+  const cookies = document.cookie.split(";");
+  for (let c of cookies) {
+    const eqPos = c.indexOf("=");
+    const name = eqPos > -1 ? c.substr(0, eqPos) : c;
+    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+  }
+
+  const el = document.getElementById("fixStatus");
+  el.style.display = "block";
+  el.className = "status ok";
+  el.innerHTML = "✔ Your login has been reset. Please try signing in again.";
+
+  // Redirect to clean login
+  setTimeout(() => {
+    window.location.href = "https://account.vcccd.edu";
+  }, 1500);
+}
+
+checkCookies();
+checkMicrosoft();
+checkVCCCD();
+</script>
+
+</body>
+</html>
