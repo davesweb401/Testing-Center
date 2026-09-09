@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student SSO Health Check</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 40px; }
+  .status { padding: 12px; border-radius: 6px; margin-bottom: 20px; }
+  .ok { background: #d4edda; color: #155724; }
+  .fail { background: #f8d7da; color: #721c24; }
+  .warn { background: #fff3cd; color: #856404; }
+</style>
+</head>
+<body>
+
+<h2>Student SSO Health Check</h2>
+<p>This page checks whether your browser is ready for Single Sign-On (SSO).</p>
+
+<div id="cookieStatus" class="status"></div>
+<div id="msStatus" class="status"></div>
+<div id="vcccdStatus" class="status"></div>
+
+<script>
+// 1. Check if cookies are enabled
+function checkCookies() {
+  document.cookie = "testcookie=1";
+  const cookiesEnabled = document.cookie.indexOf("testcookie") !== -1;
+
+  const el = document.getElementById("cookieStatus");
+  if (cookiesEnabled) {
+    el.className = "status ok";
+    el.innerHTML = "✔ Cookies are enabled. Your browser can support SSO.";
+  } else {
+    el.className = "status fail";
+    el.innerHTML = "✖ Cookies are disabled or blocked. SSO cannot work. Enable cookies or try a different browser.";
+  }
+}
+
+// 2. Check Microsoft login state (Entra ID)
+async function checkMicrosoft() {
+  const el = document.getElementById("msStatus");
+
+  try {
+    const response = await fetch("https://login.microsoftonline.com/common/oauth2/v2.0/authorize", {
+      method: "GET",
+      mode: "no-cors"
+    });
+
+    el.className = "status ok";
+    el.innerHTML = "✔ Microsoft login service reachable. If you are signed in, SSO should work.";
+  } catch (e) {
+    el.className = "status warn";
+    el.innerHTML = "⚠ Cannot reach Microsoft login service. You may not be signed in or your browser is blocking authentication.";
+  }
+}
+
+// 3. Check MyVCCCD / SAML IdP session
+async function checkVCCCD() {
+  const el = document.getElementById("vcccdStatus");
+
+  try {
+    const response = await fetch("https://account.vcccd.edu/idp/profile/SAML2/Redirect/SSO", {
+      method: "GET",
+      mode: "no-cors"
+    });
+
+    el.className = "status ok";
+    el.innerHTML = "✔ MyVCCCD login service reachable. If you are signed in, SSO should work.";
+  } catch (e) {
+    el.className = "status warn";
+    el.innerHTML = "⚠ Cannot reach MyVCCCD login service. You may not be signed in or your browser is blocking SSO.";
+  }
+}
+
+checkCookies();
+checkMicrosoft();
+checkVCCCD();
+</script>
+
+</body>
+</html>
